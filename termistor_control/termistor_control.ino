@@ -1,52 +1,49 @@
-
-//Thermometer with thermistor
+//Thermistor NTC 110 control program using arduino UNO
+//The code is prepared for four same thermistors
 
 /*thermistor parameters:
- * RT0: 10 000 Ω
- * B: 3977 K +- 0.75%
+ * RT0: 1000 Ω
+ * B: 3270 K +- 0.75%
  * T0:  25 C
  * +- 5%
  */
 
 //These values are in the datasheet
-#define RT0 1000  // Ω
+#define RT0 1000  // 1 kΩ
 #define B 3270      // K
 //--------------------------------------
 
-
 #define VCC 5.0    //Supply voltage
-#define R 1000  //R=10KΩ
+#define R 1000  // R=1 kΩ
 
-//Variables
-
-float RT, VR, ln, TX, T0, VRT;
+//Variables for each thermistor
+float RT0, VR0, ln0, TX0, T0, VRT0;
 float RT1, VR1, ln1, TX1, T1, VRT1;
 float RT2, VR2, ln2, TX2, T2, VRT2;
 float RT3, VR3, ln3, TX3, T3, VRT3;
 
-
-
+//Calibration of thermistor and conversion from Celsius to kelvin
 void setup() {
   Serial.begin(9600);
   T0 = 19 + 273.15;
-  T1 = 18.5 + 273.15;  
-  T2 = 18.3 + 273.15;  
-  T3 = 16.8 + 273.15;  //Temperature T0 from datasheet, conversion from Celsius to kelvin
+  T1 = 18.5 + 273.15;
+  T2 = 18.3 + 273.15;
+  T3 = 16.8 + 273.15;
 }
 
 void loop() {
-  //PIERWSZY
-  VRT = analogRead(A0);              //Acquisition analog value of VRT
-  VRT = (5.00 / 1023.00) * VRT;      //Conversion to voltage
-  VR = VCC - VRT;
-  RT = VRT / (VR / R);               //Resistance of RT
+  //FRIST A0
+  VRT0 = analogRead(A0);              //Acquisition analog value of VRT
+  VRT0 = (5.00 / 1023.00) * VRT0;      //Conversion to voltage
+  VR0 = VCC - VRT0;
+  RT0 = VRT0 / (VR0 / R);               //Resistance of RT
 
-  ln = log(RT / RT0);
-  TX = (1 / ((ln / B) + (1 / T0))); //Temperature from thermistor
+  ln = log(RT0 / RT0);
+  TX0 = (1 / ((ln0 / B) + (1 / T0))); //Temperature from thermistor
 
-  TX = TX - 273.15;                 //Conversion to Celsius
+  TX0 = TX0 - 273.15;                 //Conversion to Celsius
 
-  //DRUGI
+  //SECOND A1
   VRT1 = analogRead(A1);              //Acquisition analog value of VRT
   VRT1 = (5.00 / 1023.00) * VRT1;      //Conversion to voltage
   VR1 = VCC - VRT1;
@@ -57,7 +54,7 @@ void loop() {
 
   TX1 = TX1 - 273.15;                 //Conversion to Celsius
 
-  //TRZECI
+  //THIRD A2
   VRT2 = analogRead(A2);              //Acquisition analog value of VRT
   VRT2 = (5.00 / 1023.00) * VRT2;      //Conversion to voltage
   VR2 = VCC - VRT2;
@@ -68,7 +65,7 @@ void loop() {
 
   TX2 = TX2 - 273.15;                 //Conversion to Celsius
 
-  //CZWARTY
+  //FOURTH A3
   VRT3 = analogRead(A3);              //Acquisition analog value of VRT
   VRT3 = (5.00 / 1023.00) * VRT3;      //Conversion to voltage
   VR3 = VCC - VRT3;
@@ -78,9 +75,9 @@ void loop() {
   TX3 = (1 / ((ln3 / B) + (1 / T3))); //Temperature from thermistor
 
   TX3 = TX3 - 273.15;                 //Conversion to Celsius
-  
 
-  Serial.print(TX);
+  //SERIAL PRINTING CELSIUS TEMPERATURE VALUES
+  Serial.print(TX0);
   Serial.print(";");
   Serial.print(TX1);
   Serial.print(";");
@@ -89,9 +86,7 @@ void loop() {
   Serial.print(TX3);
   Serial.print("\n");
 
-
-
-  
+  //DELAS 1000ms
   delay(1000);
 
 }
