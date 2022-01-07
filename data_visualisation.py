@@ -6,8 +6,8 @@ import numpy as np
 def visualisation(results,name,path): 
     plt.figure(1)
     plt.plot(results[:,0],results[:,1], 'y' , results[:,0], results[:,2], 'g' ,results[:,0],results[:,3], 'b' ,results[:,0],results[:,4], 'black')
-    plt.ylim(20,70) #Chart range
-    plt.xlim(30,180)
+    plt.ylim(20,30) #Chart range
+    #plt.xlim(90,240)
     plt.grid()
     plt.title(name)
     plt.xlabel('Time [s]')
@@ -43,13 +43,13 @@ def statistic_values(mean_value, max_value, path):
     
 if __name__ == "__main__":
 
-    file_path = 'Results/flat_bar_basic/thermal/basic_1_thermal.csv'
+    file_path = 'Results/flat_bar_basic/state/basic_state.csv'
     
     results = pd.read_csv(file_path, sep=',',header=None)
     results = pd.DataFrame(results).to_numpy()
-    results = results[30:180,:] #Range
+    #results = results[90:240,:] #Range
     
-    visualisation(results,"Płaskonik podstawowy - pomiar 1", file_path)
+    visualisation(results,"Temperatura kalibracji", file_path)
     
     statistic_values(mean_velue(results), max_velue(results), file_path)
     
